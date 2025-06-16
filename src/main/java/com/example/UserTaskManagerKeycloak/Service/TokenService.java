@@ -2,6 +2,8 @@ package com.example.UserTaskManagerKeycloak.Service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
 import java.util.Map;
@@ -27,16 +29,14 @@ public class TokenService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        HttpEntity<Map<String, String>> request = new HttpEntity<>(
-                Map.of(
-                        "grant_type", "password",
-                        "client_id", clientId,
-                        "client_secret", clientSecret,
-                        "username", username,
-                        "password", password
-                ),
-                headers
-        );
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("grant_type", "password");
+        formData.add("client_id", clientId);
+        formData.add("client_secret", clientSecret);
+        formData.add("username", username);
+        formData.add("password", password);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(formData, headers);
 
         ResponseEntity<Map> response = new RestTemplate().postForEntity(tokenUrl, request, Map.class);
         return (String) response.getBody().get("access_token");
