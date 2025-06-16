@@ -21,8 +21,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
-                        .requestMatchers("/api/user/**").hasRole("USER")
+                        .requestMatchers("/api/admin/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/user/**").hasAnyAuthority("ROLE_USER")
                         .requestMatchers("/api/register/**","/api/token/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -40,7 +40,7 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_"); // or "" if you're using hasAuthority
+        grantedAuthoritiesConverter.setAuthorityPrefix(""); // or "" if you're using hasAuthority
         grantedAuthoritiesConverter.setAuthoritiesClaimName("resource_access.spring-boot-cli.roles");
 
         JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();

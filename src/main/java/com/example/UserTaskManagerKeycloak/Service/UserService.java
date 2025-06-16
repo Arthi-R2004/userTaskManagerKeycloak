@@ -70,4 +70,20 @@ public class UserService {
         userRepository.save(dbUser);
 
     }
+
+    public void resetPassword(String userId, String newPassword) {
+        // 1. Find user in Keycloak
+        var userResource = keycloak.realm("try2").users().get(userId);
+
+        // 2. Build new password credential
+        CredentialRepresentation credential = new CredentialRepresentation();
+        credential.setType(CredentialRepresentation.PASSWORD);
+        credential.setValue(newPassword);
+        credential.setTemporary(false); // Set to true if you want the user to be forced to change it
+
+        // 3. Reset password in Keycloak
+        userResource.resetPassword(credential);
+
+    }
+
 }
