@@ -11,14 +11,24 @@ public class KeycloakConfig {
 
     @Bean
     public Keycloak keycloak() {
-        return KeycloakBuilder.builder()
-                .serverUrl("http://localhost:8080") // Keycloak URL
-                .realm("springboot-demo")                    // Realm with admin access
-                .clientId("springboot-client")              // Use "admin-cli" or a custom client with proper roles
-                .grantType(OAuth2Constants.PASSWORD)
-                .username("realm-admin")                  // Admin username
-                .password("admin123")                  // Admin password
-                .build();
+        try {
+            Keycloak keycloak= KeycloakBuilder.builder()
+                    .serverUrl("http://localhost:8080") // Keycloak URL
+                    .realm("try2")                    // Realm with admin access
+                    .clientId("spring-boot-cli")// Use "admin-cli" or a custom client with proper roles
+                    .clientSecret("3BMPeSuXH3232GYucdvmCRCEo6lUQQi6")
+                    .grantType(OAuth2Constants.PASSWORD)
+                    .username("try2-admin")                  // Admin username
+                    .password("admin123")                  // Admin password
+                    .build();
+
+            keycloak.tokenManager().grantToken();
+            System.out.println("Token granted");
+            return keycloak;
+        } catch (Exception e) {
+            System.err.println("Error during token request:"+e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
 
